@@ -587,7 +587,7 @@ object AngConfigManager {
             if (query != "") {
                 config.remarks = "Genshin"
                 config.outboundBean?.streamSettings?.populateTransportSettings(
-                    "tcp", "http", queryPairs["obfs-host"], null, null, null, null, null, null
+                    "tcp", "http", "https://www.example.com", null, null, null, null, null, null
                 )
             }
             
