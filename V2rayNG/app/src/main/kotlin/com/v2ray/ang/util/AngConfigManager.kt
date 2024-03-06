@@ -594,7 +594,7 @@ object AngConfigManager {
                 if (queryPairs["obfs"] == "http" && "obfs-host" in queryPairs) {
                     Log.i(AppConfig.ANG_PACKAGE, "url query check passed")
                     config.outboundBean?.streamSettings?.populateTransportSettings(
-                        "tcp", HTTP, queryPairs["obfs-host"], null, null, null, null, null, null
+                        "tcp", "http", queryPairs["obfs-host"], null, null, null, null, null, null
                     )
                     Log.i(AppConfig.ANG_PACKAGE, "stream populated")
                 }
