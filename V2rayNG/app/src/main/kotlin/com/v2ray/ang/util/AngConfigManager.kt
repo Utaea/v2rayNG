@@ -585,10 +585,18 @@ object AngConfigManager {
 
             val query = Utils.urlDecode(uri.query ?: "")
             if (query != "") {
-                config.remarks = "Genshin"
-                config.outboundBean?.streamSettings?.populateTransportSettings(
-                    "tcp", "http", "https://www.example.com", null, null, null, null, null, null
-                )
+                val queryPairs = HashMap<String, String>()
+                val pairs = query.split(";")
+                for (pair in pairs) {
+                    val idx = pair.indexOf("=")
+                    queryPairs[Utils.urlDecode(pair.substring(0, idx))] = Utils.urlDecode(pair.substring(idx + 1))
+                }
+                if (queryPairs["obfs"] == "http" && "obfs-host" in queryPairs) {
+                    config.outboundBean?.streamSettings?.tcpSettings?.header?.let { header ->
+                        header.type = "http"
+                        header.request?.headers?.Host = listOf(queryPairs["obfs-host"]!!)
+                    }
+                }
             }
             
             config.outboundBean?.settings?.servers?.get(0)?.let { server ->
