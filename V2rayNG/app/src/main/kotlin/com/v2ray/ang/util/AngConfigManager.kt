@@ -592,11 +592,13 @@ object AngConfigManager {
                     queryPairs[Utils.urlDecode(pair.substring(0, idx))] = Utils.urlDecode(pair.substring(idx + 1))
                 }
                 if (queryPairs["obfs"] == "http" && "obfs-host" in queryPairs) {
-                    config.outboundBean?.streamSettings?.tcpSettings?.header?.let { header ->
-                        header.type = "http"
-                        header.request?.headers?.Host = listOf(queryPairs["obfs-host"]!!)
-                    }
+                    Log.i(AppConfig.ANG_PACKAGE, "url query check passed")
+                    config.outboundBean?.streamSettings?.populateTransportSettings(
+                        "tcp", HTTP, queryPairs["obfs-host"], null, null, null, null, null, null
+                    )
+                    Log.i(AppConfig.ANG_PACKAGE, "stream populated")
                 }
+                Log.i(AppConfig.ANG_PACKAGE, config.toString())
             }
             
             config.outboundBean?.settings?.servers?.get(0)?.let { server ->
@@ -605,6 +607,7 @@ object AngConfigManager {
                 server.password = password
                 server.method = method
             }
+            Log.i(AppConfig.ANG_PACKAGE, "seems ok")
             return true
         } catch (e: Exception) {
             Log.d(AppConfig.ANG_PACKAGE, e.toString())
