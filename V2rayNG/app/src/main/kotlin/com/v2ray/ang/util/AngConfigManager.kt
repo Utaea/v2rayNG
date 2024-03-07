@@ -589,16 +589,31 @@ object AngConfigManager {
                 val pairs = query.split(";")
                 for (pair in pairs) {
                     val idx = pair.indexOf("=")
+                    if (idx == -1) {
+                        queryPairs[Utils.urlDecode(pair)] = "";
+                    }
                     queryPairs[Utils.urlDecode(pair.substring(0, idx))] = Utils.urlDecode(pair.substring(idx + 1))
                 }
-                if (queryPairs["obfs"] == "http" && "obfs-host" in queryPairs) {
-                    Log.i(AppConfig.ANG_PACKAGE, "url query check passed")
-                    config.outboundBean?.streamSettings?.populateTransportSettings(
-                        "tcp", "http", queryPairs["obfs-host"], null, null, null, null, null, null
+                var sni: String? = ""
+                if (queryPairs["plugin"] == "obfs-local" && queryPairs["obfs"] == "http") {
+                    sni = config.outboundBean?.streamSettings?.populateTransportSettings(
+                        "tcp", HTTP, queryPairs["obfs-host"], queryPairs["path"], null, null, null, null, null
                     )
-                    Log.i(AppConfig.ANG_PACKAGE, "stream populated")
+                } else if (queryPairs["plugin"] == "v2ray-plugin") {
+                    var network = "ws";
+                    if (queryPairs["mode"] == "quic") {
+                        network = "quic";
+                    }
+                    sni = config.outboundBean?.streamSettings?.populateTransportSettings(
+                        network, null, queryPairs["host"], queryPairs["path"], null, null, null, null, null
+                    )
                 }
-                Log.i(AppConfig.ANG_PACKAGE, config.toString())
+                if ("tls" in queryPairs) {
+                    config.outboundBean?.streamSettings?.populateTlsSettings(
+                        "tls", false, sni ?: "", null, null, null, null, null
+                    )
+                }
+                
             }
             
             config.outboundBean?.settings?.servers?.get(0)?.let { server ->
@@ -607,7 +622,6 @@ object AngConfigManager {
                 server.password = password
                 server.method = method
             }
-            Log.i(AppConfig.ANG_PACKAGE, "seems ok")
             return true
         } catch (e: Exception) {
             Log.d(AppConfig.ANG_PACKAGE, e.toString())
