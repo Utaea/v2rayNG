@@ -592,8 +592,9 @@ object AngConfigManager {
                     val idx = pair.indexOf("=")
                     if (idx == -1) {
                         queryPairs[Utils.urlDecode(pair)] = "";
+                    } else {
+                        queryPairs[Utils.urlDecode(pair.substring(0, idx))] = Utils.urlDecode(pair.substring(idx + 1))
                     }
-                    queryPairs[Utils.urlDecode(pair.substring(0, idx))] = Utils.urlDecode(pair.substring(idx + 1))
                 }
                 Log.d(AppConfig.ANG_PACKAGE, queryPairs.toString())
                 var sni: String? = ""
