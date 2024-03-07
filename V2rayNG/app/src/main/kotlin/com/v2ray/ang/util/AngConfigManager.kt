@@ -597,7 +597,7 @@ object AngConfigManager {
                 var sni: String? = ""
                 if (queryPairs["plugin"] == "obfs-local" && queryPairs["obfs"] == "http") {
                     sni = config.outboundBean?.streamSettings?.populateTransportSettings(
-                        "tcp", HTTP, queryPairs["obfs-host"], queryPairs["path"], null, null, null, null, null
+                        "tcp", "http", queryPairs["obfs-host"], queryPairs["path"], null, null, null, null, null
                     )
                 } else if (queryPairs["plugin"] == "v2ray-plugin") {
                     var network = "ws";
