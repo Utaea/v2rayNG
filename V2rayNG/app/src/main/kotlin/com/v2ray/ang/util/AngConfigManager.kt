@@ -587,6 +587,7 @@ object AngConfigManager {
             if (query != "") {
                 val queryPairs = HashMap<String, String>()
                 val pairs = query.split(";")
+                Log.d(AppConfig.ANG_PACKAGE, pairs)
                 for (pair in pairs) {
                     val idx = pair.indexOf("=")
                     if (idx == -1) {
@@ -594,6 +595,7 @@ object AngConfigManager {
                     }
                     queryPairs[Utils.urlDecode(pair.substring(0, idx))] = Utils.urlDecode(pair.substring(idx + 1))
                 }
+                Log.d(AppConfig.ANG_PACKAGE, queryPairs)
                 var sni: String? = ""
                 if (queryPairs["plugin"] == "obfs-local" && queryPairs["obfs"] == "http") {
                     sni = config.outboundBean?.streamSettings?.populateTransportSettings(
